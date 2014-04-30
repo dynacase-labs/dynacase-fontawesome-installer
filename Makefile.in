@@ -1,0 +1,14 @@
+VERSION=@VERSION@
+RELEASE=@RELEASE@
+PACKAGE=@PACKAGE@
+
+webinst:
+	mkdir -p tmp
+	tar -C src -zcf tmp/content.tar.gz .
+	cp info.xml tmp/info.xml
+	tar -C tmp -zcf ${PACKAGE}-${VERSION}-${RELEASE}.webinst info.xml content.tar.gz
+	rm -rf tmp
+
+clean:
+	rm -Rf tmp
+	rm -f ${PACKAGE}-*.webinst
