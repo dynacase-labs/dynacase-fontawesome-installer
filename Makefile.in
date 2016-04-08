@@ -6,7 +6,8 @@ webinst:
 	mkdir -p tmp
 	tar -C src -zcf tmp/content.tar.gz .
 	cp info.xml tmp/info.xml
-	tar -C tmp -zcf ${PACKAGE}-${VERSION}-${RELEASE}.webinst info.xml content.tar.gz
+	cp LICENSE tmp/
+	tar -C tmp -zcf ${PACKAGE}-${VERSION}-${RELEASE}.webinst info.xml content.tar.gz LICENSE
 	rm -rf tmp
 
 clean:
