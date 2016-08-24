@@ -1,0 +1,53 @@
+LIB_NAME = @LIB_NAME@
+NPM_PACKAGE = @NPM_PACKAGE@
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+RELEASE = @RELEASE@
+
+SRC_DIR := .
+BUILDTOOLS_DIR := $(SRC_DIR)/build
+
+CUSTOM_DIR = custom
+CUSTOM_TARGET = custom
+
+override ROOTFILES += LICENSE info.xml
+
+src:
+	mkdir $@
+
+src/programs: | src
+	mkdir $@
+
+src/programs/$(LIB_NAME)_install: $(BUILDTOOLS_DIR)/installer.php | src/programs
+	cp $< $@
+
+${PACKAGE}-${VERSION}-${RELEASE}.webinst: src/programs/$(LIB_NAME)_install $(CUSTOM_TARGET)
+	mkdir -p tmp
+	tar -C src -zcf tmp/content.tar.gz .
+	cp $(wildcard $(ROOTFILES)) tmp/
+	tar -C tmp -zcf $@ content.tar.gz $(wildcard $(ROOTFILES))
+	rm -rf tmp
+
+update: ## Update to version targeted by VERSION
+	$(BUILDTOOLS_DIR)/update.sh $(SRC_DIR) $(NPM_PACKAGE) $(VERSION)
+
+webinst: ${PACKAGE}-${VERSION}-${RELEASE}.webinst ## Generate webinst
+
+clean: ## remove uncommited stuff
+	git clean -df
+
+clean-all: ## remove uncommited stuff and bower / npm cache dirs
+	git clean -dfx
+
+ifeq ($(wildcard $(CUSTOM_DIR)/Makefile), )
+$(CUSTOM_TARGET): ;
+else
+include $(CUSTOM_DIR)/Makefile
+endif
+
+.PHONY: webinst clean clean-all update $(CUSTOM_TARGET) help
+
+.DEFAULT_GOAL := help
+
+help: ## Show this help message
+	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

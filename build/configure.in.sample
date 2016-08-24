@@ -1,7 +1,7 @@
 AC_INIT(./build/Makefile.in)
 
 AC_SUBST(LIB_NAME)
-AC_SUBST(BOWER_PACKAGE)
+AC_SUBST(NPM_PACKAGE)
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
 AC_SUBST(RELEASE)
@@ -11,10 +11,10 @@ AC_SUBST(RELEASE)
 ################################
 
 # lib name in dynacase (name of the lib/… folder)
-LIB_NAME=fontawesome
+LIB_NAME=
 
 # package to install from bower
-BOWER_PACKAGE=font-awesome
+NPM_PACKAGE=
 
 # dynacase control package name
 PACKAGE=dynacase-${LIB_NAME}-installer
@@ -26,4 +26,4 @@ RELEASE=`cat RELEASE`
 # DO NOT EDIT BEYOND THIS LINE #
 ################################
 
-AC_OUTPUT(Makefile:build/global-Makefile.in info.xml:build/info.xml.in)
+AC_OUTPUT(Makefile:build/Makefile.in info.xml:build/info.xml.in)
