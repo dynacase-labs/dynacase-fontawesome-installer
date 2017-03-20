@@ -1,15 +1,28 @@
-VERSION=@VERSION@
-RELEASE=@RELEASE@
-PACKAGE=@PACKAGE@
+VERSION = @VERSION@
+RELEASE = @RELEASE@
+PACKAGE = @PACKAGE@
+LIB_NAME = @LIB_NAME@
 
-webinst:
+ROOTFILES = info.xml LICENSE
+EXISTING_ROOTFILES = $(wildcard $(ROOTFILES))
+
+src:
+	mkdir $@
+
+src/programs: src
+	mkdir $@
+
+src/programs/$(LIB_NAME)_install: installer.php src/programs
+	cp $< $@
+
+webinst: src/programs/$(LIB_NAME)_install
 	mkdir -p tmp
 	tar -C src -zcf tmp/content.tar.gz .
-	cp info.xml tmp/info.xml
-	cp LICENSE tmp/
-	tar -C tmp -zcf ${PACKAGE}-${VERSION}-${RELEASE}.webinst info.xml content.tar.gz LICENSE
-	rm -rf tmp
+	cp $(wildcard $(ROOTFILES)) tmp/
+	tar -C tmp -zcf ${PACKAGE}-${VERSION}-${RELEASE}.webinst content.tar.gz $(wildcard $(ROOTFILES))
 
 clean:
-	rm -Rf tmp
-	rm -f ${PACKAGE}-*.webinst
+	git clean -df
+
+clean-all:
+	git clean -dfx

@@ -7,13 +7,15 @@ $WIFF_CONTEXT_ROOT = getenv("WIFF_CONTEXT_ROOT");
 $libPath = $WIFF_CONTEXT_ROOT.DIRECTORY_SEPARATOR.'lib';
 
 if (!$WIFF_CONTEXT_ROOT || !is_dir($libPath)) {
-    exit("The context lib is not a valid path : $libPath\n");
+    echo("The context lib is not a valid path : $libPath\n");
+    exit(10);
 }
 
 $pathToZip = realpath($argv[1]);
 
 if (!is_file($pathToZip)) {
-    exit("The path is not a valid filename : $pathToZip\n");
+    echo("The path is not a valid filename : $pathToZip\n");
+    exit(20);
 }
 
 $zip = new ZipArchive;
@@ -23,6 +25,7 @@ if ($res === true) {
     $zip->extractTo($libPath);
     $zip->close();
 } else {
-    exit("Unable to open : $pathToZip\n");
+    echo("Unable to open : $pathToZip\n");
+    exit(30);
 }
 exit(0);

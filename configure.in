@@ -1,9 +1,13 @@
 AC_INIT(./Makefile.in)
-AC_SUBST(PACKAGE)
-PACKAGE=dynacase-fontawesome-installer
+
+AC_SUBST(LIB_NAME)
+LIB_NAME=fontawesome
+
 AC_SUBST(VERSION)
 VERSION=`cat VERSION`
 AC_SUBST(RELEASE)
 RELEASE=`cat RELEASE`
+AC_SUBST(PACKAGE)
+PACKAGE=dynacase-${LIB_NAME}-installer
 
 AC_OUTPUT(Makefile info.xml)
