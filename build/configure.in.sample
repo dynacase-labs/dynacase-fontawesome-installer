@@ -11,10 +11,10 @@ AC_SUBST(RELEASE)
 ################################
 
 # lib name in dynacase (name of the lib/… folder)
-LIB_NAME=fontawesome
+LIB_NAME=
 
 # package to install from bower
-NPM_PACKAGE=font-awesome
+NPM_PACKAGE=
 
 # dynacase control package name
 PACKAGE=dynacase-${LIB_NAME}-installer

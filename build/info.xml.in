@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<module name="@PACKAGE@" version="@VERSION@" release="@RELEASE@" license="http://www.gnu.org/licenses/lgpl-3.0.txt GNU Lesser General Public License v3.0">
+
+    <description>Install @LIB_NAME@</description>
+
+    <parameters>
+        <param name="url@LIB_NAME@" label="@LIB_NAME@ download URL" type="text"
+               volatile="yes" onupgrade="W"
+               default="http://ftp.dynacase.org/third-party/@NPM_PACKAGE@-@VERSION@.zip"/>
+    </parameters>
+
+    <post-install>
+        <download href="@url@LIB_NAME@" action="programs/@LIB_NAME@_install">
+            <label lang="en">Download and install @LIB_NAME@</label>
+        </download>
+    </post-install>
+
+    <post-upgrade>
+        <download href="@url@LIB_NAME@" action="programs/@LIB_NAME@_install">
+            <label lang="en">Download and install @LIB_NAME@</label>
+        </download>
+    </post-upgrade>
+
+    <pre-install>
+        <check type="phpclass"  class="ZipArchive"><help>Zip class is not present (including in php 5.2)</help></check>
+    </pre-install>
+
+    <pre-upgrade>
+        <check type="phpclass"  class="ZipArchive"><help>Zip class is not present (including in php 5.2)</help></check>
+    </pre-upgrade>
+
+</module>
