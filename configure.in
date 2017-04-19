@@ -1,4 +1,4 @@
-AC_INIT(./build/Makefile.in)
+AC_INIT(./build-tools/Makefile.in)
 
 AC_SUBST(LIB_NAME)
 AC_SUBST(NPM_PACKAGE)
@@ -11,13 +11,13 @@ AC_SUBST(RELEASE)
 ################################
 
 # lib name in dynacase (name of the lib/… folder)
-LIB_NAME=fontawesome
+LIB_NAME=font-awesome
 
 # package to install from bower
 NPM_PACKAGE=font-awesome
 
 # dynacase control package name
-PACKAGE=dynacase-${LIB_NAME}-installer
+PACKAGE=dynacase-fontawesome-installer
 
 VERSION=`cat VERSION`
 RELEASE=`cat RELEASE`
@@ -26,4 +26,4 @@ RELEASE=`cat RELEASE`
 # DO NOT EDIT BEYOND THIS LINE #
 ################################
 
-AC_OUTPUT(Makefile:build/Makefile.in info.xml:build/info.xml.in)
+AC_OUTPUT(Makefile:build-tools/Makefile.in info.xml:build-tools/info.xml.in)
