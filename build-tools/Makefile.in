@@ -1,0 +1,86 @@
+LIB_NAME = @LIB_NAME@
+NPM_PACKAGE = @NPM_PACKAGE@
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+RELEASE = @RELEASE@
+
+SRC_DIR := .
+
+BUILDTOOLS_DIR = $(SRC_DIR)/build-tools
+BUILD_DIR = $(SRC_DIR)/build
+
+CACHE_DIR = $(SRC_DIR)/cache
+CACHE_WEBINST_DIR = $(CACHE_DIR)/webinst
+CACHE_ZIP_DIR = $(CACHE_DIR)/zip
+
+CUSTOM_DIR = $(SRC_DIR)/custom
+CUSTOM_WEBINST_TARGET = custom_webinst
+CUSTOM_ZIP_TARGET = custom_zip
+
+UPLOAD_URL := distrib@ftp.anakeen.com:/share/ftp/third-party/
+
+override ROOTFILES += $(SRC_DIR)/LICENSE $(SRC_DIR)/info.xml
+
+$(BUILD_DIR):
+	mkdir $@
+
+$(CACHE_DIR):
+	mkdir $@
+
+$(CACHE_WEBINST_DIR): | $(CACHE_DIR)
+	mkdir $@
+
+$(CACHE_WEBINST_DIR)/programs: | $(CACHE_WEBINST_DIR)
+	mkdir $@
+
+$(CACHE_ZIP_DIR): | $(CACHE_DIR)
+	mkdir $@
+
+$(CACHE_WEBINST_DIR)/programs/$(LIB_NAME)_install: $(BUILDTOOLS_DIR)/installer.php | $(CACHE_WEBINST_DIR)/programs
+	cp $< $@
+
+$(CACHE_DIR)/node_modules/$(NPM_PACKAGE): VERSION | $(CACHE_DIR)
+	(cd $(CACHE_DIR) && npm install "${NPM_PACKAGE}@${VERSION}")
+
+$(BUILD_DIR)/${PACKAGE}-${VERSION}-${RELEASE}.webinst: $(CACHE_WEBINST_DIR)/programs/$(LIB_NAME)_install VERSION RELEASE $(CUSTOM_WEBINST_TARGET) | $(BUILD_DIR)
+	mkdir -p $(CACHE_DIR)/tmp
+	tar -C $(CACHE_WEBINST_DIR) -zcf $(CACHE_DIR)/tmp/content.tar.gz .
+	cp $(wildcard $(ROOTFILES)) $(CACHE_DIR)/tmp/
+	tar -C $(CACHE_DIR)/tmp -zcf $@ content.tar.gz $(notdir $(wildcard $(ROOTFILES)))
+	rm -rf $(CACHE_DIR)/tmp
+
+$(CACHE_ZIP_DIR)/$(LIB_NAME): $(CACHE_DIR)/node_modules/$(NPM_PACKAGE) | $(CACHE_ZIP_DIR)
+	rm -rf "$@"
+	cp -r "$<" "$@"
+	rm -rf "$@/.npmignore" \
+	       "$@/package.json"
+
+$(BUILD_DIR)/${LIB_NAME}-${VERSION}.zip: $(CACHE_ZIP_DIR)/$(LIB_NAME) $(CUSTOM_ZIP_TARGET) | $(BUILD_DIR)
+	(cd "$(CACHE_ZIP_DIR)" && zip -rq - "$(LIB_NAME)") > "$@"
+
+all: zip webinst ## Shortcut for zip and webinst
+
+zip: $(BUILD_DIR)/${LIB_NAME}-${VERSION}.zip ## Generate zip
+
+webinst: $(BUILD_DIR)/${PACKAGE}-${VERSION}-${RELEASE}.webinst ## Generate webinst
+
+upload: $(BUILD_DIR)/${LIB_NAME}-${VERSION}.zip ## Upload zip file anakeen third party repo
+	rsync --partial --progress --rsh=ssh "$<" $(UPLOAD_URL) > "$@"
+
+clean: ## remove uncommited stuff
+	git clean -df
+
+clean-all: ## remove uncommited stuff and cache
+	git clean -dfx
+
+-include $(CUSTOM_DIR)/Makefile
+
+%:
+	@echo empty recipe "$@"
+
+.PHONY: webinst zip all upload clean clean-all $(CUSTOM_ZIP_TARGET) $(CUSTOM_WEBINST_TARGET) help
+
+.DEFAULT_GOAL := help
+
+help: ## Show this help message
+	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

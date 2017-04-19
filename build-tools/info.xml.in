@@ -10,23 +10,23 @@
     </parameters>
 
     <post-install>
-        <download href="@url@LIB_NAME@" action="programs/@LIB_NAME@_install">
+        <download href="@{url@LIB_NAME@}" action="programs/@LIB_NAME@_install">
             <label lang="en">Download and install @LIB_NAME@</label>
         </download>
     </post-install>
 
     <post-upgrade>
-        <download href="@url@LIB_NAME@" action="programs/@LIB_NAME@_install">
+        <download href="@{url@LIB_NAME@}" action="programs/@LIB_NAME@_install">
             <label lang="en">Download and install @LIB_NAME@</label>
         </download>
     </post-upgrade>
 
     <pre-install>
-        <check type="phpclass"  class="ZipArchive"><help>Zip class is not present (including in php 5.2)</help></check>
+        <check type="phpclass"  class="ZipArchive"><help>Zip class is not present</help></check>
     </pre-install>
 
     <pre-upgrade>
-        <check type="phpclass"  class="ZipArchive"><help>Zip class is not present (including in php 5.2)</help></check>
+        <check type="phpclass"  class="ZipArchive"><help>Zip class is not present</help></check>
     </pre-upgrade>
 
 </module>
