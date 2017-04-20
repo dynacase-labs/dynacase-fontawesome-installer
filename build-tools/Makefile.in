@@ -63,6 +63,7 @@ all: zip webinst ## Shortcut for zip and webinst
 zip: $(BUILD_DIR)/${LIB_NAME}-${VERSION}.zip ## Generate zip
 
 webinst: $(BUILD_DIR)/${PACKAGE}-${VERSION}-${RELEASE}.webinst ## Generate webinst
+	cp "$<"  $(SRC_DIR)/${PACKAGE}-${VERSION}-${RELEASE}.webinst
 
 upload: $(BUILD_DIR)/${LIB_NAME}-${VERSION}.zip ## Upload zip file anakeen third party repo
 	rsync --partial --progress --rsh=ssh "$<" $(UPLOAD_URL) > "$@"
